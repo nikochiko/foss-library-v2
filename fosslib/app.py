@@ -10,7 +10,7 @@ def not_found_error(e):
     return render_template("404.html"), 404
 
 
-def create_app(config_object="foss_library.settings"):
+def create_app(config_object="fosslib.settings"):
     """Flask app factory"""
     app = Flask(__name__)
     app.config.from_object(config_object)
@@ -21,3 +21,5 @@ def create_app(config_object="foss_library.settings"):
 
     # custom error handlers
     app.register_error_handler(404, not_found_error)
+
+    return app
