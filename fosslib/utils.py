@@ -1,4 +1,102 @@
-import requests
+from math import ceil
+from contextlib import contextmanager
+
+from flask import abort, flash, request
+
+
+class PaginationError(Exception):
+    pass
+
+
+class Pagination:
+    default_page = 1
+    default_per_page = 20
+    default_max_per_page = 50
+
+    def __init__(
+        self,
+        query,
+        page=None,
+        per_page=None,
+        max_per_page=None,
+    ):
+        # the query object without a SQL limit applied
+        self.query = query
+
+        # current page number
+        self.page = page
+        # items to displayed on each page
+        self.per_page = per_page
+        # max value of self.per_page (used for validation)
+        self.max_per_page = max_per_page or self.__class__.default_max_per_page
+
+        self.init_from_request_args()
+        print(self.page)
+        print(self.per_page)
+
+        # validate page, per_page before doing a DB query
+        self.validate_pagination_args()
+
+        self.total = self.get_total()
+        self.items = self.get_items()
+        self.total_pages = self.get_total_pages()
+
+    def init_from_request_args(self):
+        if self.page is None:
+            with try_or_abort(PaginationError, 404):
+                self.page = self.get_int_param_from_request(
+                    "page", self.__class__.default_page
+                )
+
+        if self.per_page is None:
+            with try_or_abort(PaginationError, 404):
+                self.per_page = self.get_int_param_from_request(
+                    "per_page",
+                    self.__class__.default_per_page,
+                )
+
+    def validate_pagination_args(self):
+        with try_or_abort(AssertionError, 404):
+            self.validate_page()
+            self.validate_per_page()
+
+    def validate_per_page(self):
+        assert self.per_page > 0, "There should be at least 1 item per page"
+        assert (
+            self.per_page <= self.max_per_page
+        ), f"There cannot be more than {self.max_per_page} items on each page"
+
+    def validate_page(self):
+        assert self.page >= 1, "Page should be at least 1"
+
+    def get_total(self):
+        return self.query.count()
+
+    def get_items(self):
+        limit = self.per_page
+        offset = self.per_page * (self.page - 1)
+        return self.query.offset(offset).limit(limit).all()
+
+    def get_total_pages(self):
+        return ceil(self.total / self.per_page)
+
+    def get_int_param_from_request(self, param, default):
+        value = request.args.get(param, default)
+        try:
+            value = int(value)
+        except (ValueError, TypeError):
+            # this error is probably because the query param wasn't an int
+            raise PaginationError(f"Couldn't convert {param} arg to int")
+
+        return value
+
+
+@contextmanager
+def try_or_abort(exc_classes, abort_code):
+    try:
+        yield
+    except exc_classes:
+        abort(abort_code)
 
 
 def convert_isbn10_to_isbn13(isbn10: str) -> str:
@@ -87,26 +185,39 @@ def get_check_digit_for_isbn10(partial_isbn10: str) -> str:
     return check_digit
 
 
-def get_book_cover_by_isbn(isbn: str) -> str:
+async def get_cover_image_by_isbn(session: "aiohttp.ClientSession", isbn: str) -> str:
     """Returns the book cover for the given book using OpenLibrary API"""
-    cover_id = get_cover_id_by_isbn(isbn)
-    cover_image_url = get_cover_image_from_cover_id(cover_id)
+    cover_id = await get_cover_id_by_isbn(session, isbn)
+
+    if cover_id is None:
+        return None
+
+    cover_image_url = get_cover_image_by_cover_id(cover_id)
 
     return cover_image_url
 
 
-def get_cover_id_by_isbn(isbn: str) -> int:
+async def get_cover_id_by_isbn(session: "aiohttp.ClientSession", isbn: str) -> int:
     """Gets the book cover ID from OpenLibrary API"""
     isbn_api_url = f"https://openlibrary.org/isbn/{isbn}.json"
 
-    r = requests.get(isbn_api_url)
-    r.raise_for_status()
+    async with session.get(isbn_api_url) as response:
+        response.raise_for_status()
+        response_data = await response.json()
 
-    response_data = r.json()
+    if "covers" not in response_data:
+        return None
+
     return response_data["covers"][0]
 
 
-def get_cover_image_from_cover_id(cover_id: int) -> str:
+def get_cover_image_by_cover_id(cover_id: int) -> str:
     """Gets the cover image URL from cover id"""
     cover_image_url = f"https://covers.openlibrary.org/b/id/{cover_id}-M.jpg"
     return cover_image_url
+
+
+def flash_form_errors(form, category="warning"):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f"{getattr(form, field).label.text} - {error}", category)

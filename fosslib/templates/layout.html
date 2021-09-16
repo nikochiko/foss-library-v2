@@ -23,12 +23,14 @@
 
   </head>
 
-  <body>
+  <body class="bg-light">
 
     {% include 'navbar.html' %}
 
-    {% block content %}
-    {% endblock %}
+    <div class="container border border-primary" style="background-color: #FBFEF9;">
+      {% block content %}
+      {% endblock %}
+    </div>
 
     {% block js %}{% endblock %}
 

@@ -1,0 +1,7 @@
+ENV = "testing"
+SECRET_KEY = "test"
+TESTING = True
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+WTF_CSRF_ENABLED = False

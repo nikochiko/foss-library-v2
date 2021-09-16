@@ -1,16 +1,16 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light text-primary">
+<nav class="navbar navbar-expand-md navbar-light text-primary mb-2">
   <a class="navbar-brand text-primary fs-1" href="/">
-    <img width="50" height="50" src="{{ url_for('static', filename='build/img/icon.svg') }}">
+    <img width="50" height="50" src="{{ url_for('static', filename='build/img/icon.svg') }}"></img>
     FossLib
   </a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      {% if request.path.startswith("/") %}
+      {% if request.path.startswith("/books/") %}
       <li class="nav-item bg-primary text-light active mx-1 fs-5">
       {% else %}
       <li class="nav-item text-primary mx-1 fs-5">
       {% endif %}
-        <a class="nav-link text-reset px-3 py-1">
+        <a class="nav-link text-reset px-3 py-0" href="{{ url_for('books.list') }}">
           Books
         </a>
       </li>
@@ -19,7 +19,7 @@
       {% else %}
       <li class="nav-item text-primary mx-1 fs-5">
       {% endif %}
-        <a class="nav-link text-reset px-3 py-1" href="/members/">
+        <a class="nav-link text-reset px-3 py-0" href="/members/">
           Members
         </a>
       </li>
