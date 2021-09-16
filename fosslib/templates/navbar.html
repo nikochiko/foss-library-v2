@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-md navbar-light text-primary mb-2">
-  <a class="navbar-brand text-primary fs-1" href="/">
+  <a class="navbar-brand text-primary fs-1 mx-2" href="/">
     <img width="50" height="50" src="{{ url_for('static', filename='build/img/icon.svg') }}"></img>
     FossLib
   </a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       {% if request.path.startswith("/books/") %}
       <li class="nav-item bg-primary text-light active mx-1 fs-5">
       {% else %}
@@ -24,5 +24,15 @@
         </a>
       </li>
     </ul>
+    <form class="d-flex mx-2" action="{{ url_for('books.list') }}">
+      <div class="input-group me-2">
+        <input class="form-control-lg border border-primary" style="outline: none;" name="q" type="search" placeholder="Search" value="{{ request.args.get('q', '') }}" aria-label="Search">
+        <button class="btn btn-outline-primary text-reset text-decoration-none bg-body" style="box-shadow: none;" type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+        </button>
+      </div>
+    </form>
   </div>
 </nav>
