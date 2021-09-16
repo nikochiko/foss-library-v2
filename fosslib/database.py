@@ -1,15 +1,39 @@
-from flask import current_app
-from pony.orm import Database
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
-def initialise_pony_db():
-    db = Database()
+class CRUDMixin(object):
+    """
+    Mixin that adds convenience methods for CRUD (create, read, update, delete) operations.
 
-    # only initialising if we are in app context
-    if current_app:
-        db.bind(**current_app.config["PONY"])
+    From: flask-cookiecutter
+    """
 
-    return db
+    @classmethod
+    def create(cls, **kwargs):
+        """Create a new record and save it the database."""
+        instance = cls(**kwargs)
+        return instance.save()
 
+    def update(self, commit=True, **kwargs):
+        """Update specific fields of a record."""
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
+        if commit:
+            return self.save()
+        return self
 
-db = initialise_pony_db()
+    def save(self, commit=True):
+        """Save the record."""
+        db.session.add(self)
+        if commit:
+            db.session.commit()
+        return self
+
+    def delete(self, commit=True):
+        """Remove the record from the database."""
+        db.session.delete(self)
+        if commit:
+            return db.session.commit()
+        return

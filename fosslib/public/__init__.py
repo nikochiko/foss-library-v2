@@ -1,1 +1,1 @@
-from .views import blueprint  # noqa: F401
+from . import views  # noqa: F401

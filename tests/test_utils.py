@@ -1,4 +1,8 @@
-from fosslib.utils import convert_isbn10_to_isbn13, convert_isbn13_to_isbn10
+from fosslib.utils import (
+    convert_isbn10_to_isbn13,
+    convert_isbn13_to_isbn10,
+    get_book_cover_by_isbn,
+)
 
 
 def test_isbn10_to_isbn13():
@@ -27,3 +31,10 @@ def test_isbn13_to_isbn10():
     isbn10 = "1449340377"
 
     assert convert_isbn13_to_isbn10(isbn13) == isbn10
+
+
+def test_cover_image_from_isbn():
+    isbn = "9780007220854"
+
+    cover_image = get_book_cover_by_isbn(isbn)
+    assert cover_image == "https://covers.openlibrary.org/b/id/4935512-M.jpg"

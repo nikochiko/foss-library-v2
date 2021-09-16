@@ -1,3 +1,6 @@
+import requests
+
+
 def convert_isbn10_to_isbn13(isbn10: str) -> str:
     """
     Utility function for converting an ISBN-10 code to an ISBN-13 code
@@ -82,3 +85,28 @@ def get_check_digit_for_isbn10(partial_isbn10: str) -> str:
         check_digit = str(check_digit)
 
     return check_digit
+
+
+def get_book_cover_by_isbn(isbn: str) -> str:
+    """Returns the book cover for the given book using OpenLibrary API"""
+    cover_id = get_cover_id_by_isbn(isbn)
+    cover_image_url = get_cover_image_from_cover_id(cover_id)
+
+    return cover_image_url
+
+
+def get_cover_id_by_isbn(isbn: str) -> int:
+    """Gets the book cover ID from OpenLibrary API"""
+    isbn_api_url = f"https://openlibrary.org/isbn/{isbn}.json"
+
+    r = requests.get(isbn_api_url)
+    r.raise_for_status()
+
+    response_data = r.json()
+    return response_data["covers"][0]
+
+
+def get_cover_image_from_cover_id(cover_id: int) -> str:
+    """Gets the cover image URL from cover id"""
+    cover_image_url = f"https://covers.openlibrary.org/b/id/{cover_id}-M.jpg"
+    return cover_image_url
