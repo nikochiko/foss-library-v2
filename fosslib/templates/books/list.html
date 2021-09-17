@@ -11,7 +11,7 @@
 
       <div class="col-2">
         <a class="text-reset text-decoration-none" href="{{ url_for('books.show', id=book.id) }}">
-          <img class="img-thumbnail mx-auto d-block" src="{{ book.cover_image }}" />
+          <img class="img-thumbnail mx-auto d-block" width="80%" src="{{ book.cover_image }}" />
         </a>
       </div>
 
@@ -59,7 +59,7 @@
         {% else %}
         <li class="page-item">
         {% endif %}
-          <a class="page-link text-reset text-decoration-none" href="{{ url_for('books.list', page=pagination.page-1) }}">
+          <a class="page-link" href="{{ url_for('books.list', page=pagination.page-1) }}">
             Previous
           </a>
         </li>
@@ -70,7 +70,7 @@
         {% else %}
         <li class="page-item">
         {% endif %}
-          <a class="page-link text-reset text-decoration-none" href="{{ url_for('books.list', page=page) }}">
+          <a class="page-link" href="{{ url_for('books.list', page=page) }}">
             {{ page }}
           </a>
         </li>
@@ -82,7 +82,7 @@
         {% else %}
         <li class="page-item disabled">
         {% endif %}
-          <a class="page-link text-reset text-decoration-none" href="{{ url_for('books.list', page=pagination.page+1) }}">
+          <a class="page-link" href="{{ url_for('books.list', page=pagination.page+1) }}">
             Next
           </a>
         </li>
