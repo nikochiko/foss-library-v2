@@ -1,10 +1,7 @@
 from fosslib.members.models import Member
 from .utils import _test_url_for_GET_request
 
-URLs = {
-    "list": "/members/",
-    "create": "/members/create/"
-}
+URLs = {"list": "/members/", "create": "/members/create/"}
 
 
 valid_member_payload = {

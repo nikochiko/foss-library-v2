@@ -46,7 +46,7 @@ def create():
             flash(
                 "There was some error while trying to add the "
                 "new member. Maybe the email is already in use?",
-                "danger"
+                "danger",
             )
             return render_template(template_path, form=form)
 
