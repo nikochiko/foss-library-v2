@@ -1,7 +1,11 @@
+import aiohttp
+import pytest
+
 from fosslib.utils import (
     convert_isbn10_to_isbn13,
     convert_isbn13_to_isbn10,
-    get_book_cover_by_isbn,
+    get_cover_image_by_isbn,
+    get_gravatar_image_url,
 )
 
 
@@ -33,8 +37,21 @@ def test_isbn13_to_isbn10():
     assert convert_isbn13_to_isbn10(isbn13) == isbn10
 
 
-def test_cover_image_from_isbn():
+@pytest.mark.asyncio
+async def test_cover_image_from_isbn():
     isbn = "9780007220854"
 
-    cover_image = get_book_cover_by_isbn(isbn)
+    async with aiohttp.ClientSession() as session:
+        cover_image = await get_cover_image_by_isbn(session, isbn)
+
     assert cover_image == "https://covers.openlibrary.org/b/id/4935512-M.jpg"
+
+
+def test_get_gravatar_image_url():
+    # for now, just test that it doesn't raise an error
+    email = "test@example.com"
+
+    try:
+        get_gravatar_image_url(email)
+    except Exception as e:
+        pytest.fail(str(e))

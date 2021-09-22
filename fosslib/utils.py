@@ -1,5 +1,7 @@
+import hashlib
 from math import ceil
 from contextlib import contextmanager
+from urllib.parse import urlencode
 
 import aiohttp
 from flask import abort, flash, request
@@ -222,3 +224,18 @@ def flash_form_errors(form, category="warning"):
     for field, errors in form.errors.items():
         for error in errors:
             flash(f"{getattr(form, field).label.text} - {error}", category)
+
+
+def get_gravatar_image_url(email: str) -> str:
+    """Gets the gravatar image URL for an email"""
+    gravatar_base_url = "https://www.gravatar.com/avatar"
+
+    default = "https://upload.wikimedia.org/wikipedia/commons/1/1e/Default-avatar.jpg"
+    size = 40
+
+    email_hash = hashlib.md5(email.lower().encode()).hexdigest()
+    query_params = urlencode({"d": default, "s": str(size)})
+
+    url = f"{gravatar_base_url}/{email_hash}?{query_params}"
+
+    return url
