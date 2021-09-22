@@ -8,6 +8,7 @@ v2 of https://github.com/nikochiko/foss-library. Better UI, better code
 ### Interesting add-ons from v1
 * Apart from importing books from Frappe API, this automatically gets the cover image for the book using the OpenLibrary API.
 * Uses Gravatar for member avatars
+* One search box for searching through book titles, author names, and publisher names
 
 ### Screenshots
 
