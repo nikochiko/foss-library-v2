@@ -34,8 +34,6 @@ class Pagination:
         self.max_per_page = max_per_page or self.__class__.default_max_per_page
 
         self.init_from_request_args()
-        print(self.page)
-        print(self.per_page)
 
         # validate page, per_page before doing a DB query
         self.validate_pagination_args()
