@@ -7,7 +7,7 @@ jobs:
           TEST_ENV: "CIRCLECI"
           DATABASE_URL: postgresql://root@localhost/circle_test
           CODECOV_TOKEN: $CODECOV_TOKEN
-      - image: circleci/postgres:9.6-alpine-ram
+      - image: circleci/postgres:12-alpine-ram
     steps:
       - checkout
       - restore_cache:
