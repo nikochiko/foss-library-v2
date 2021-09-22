@@ -28,6 +28,9 @@ def app():
 
         yield app
 
+        with app.app_context():
+            db.drop_all()
+
     finally:
         if os.getenv("TEST_ENV") != "CIRCLECI":
             _postgres_db.stop()
