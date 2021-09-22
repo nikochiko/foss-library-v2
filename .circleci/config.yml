@@ -5,7 +5,7 @@ jobs:
       - image: circleci/python:3.9
         environment:
           TEST_ENV: "CIRCLECI"
-          DATABASE_URL: postgresql://root@localhost/circle_test
+          DATABASE_URL: postgresql://postgres@localhost/circle_test
           CODECOV_TOKEN: $CODECOV_TOKEN
       - image: circleci/postgres:12-alpine-ram
     steps:
