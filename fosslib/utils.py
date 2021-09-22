@@ -1,6 +1,7 @@
 from math import ceil
 from contextlib import contextmanager
 
+import aiohttp
 from flask import abort, flash, request
 
 
@@ -185,7 +186,7 @@ def get_check_digit_for_isbn10(partial_isbn10: str) -> str:
     return check_digit
 
 
-async def get_cover_image_by_isbn(session: "aiohttp.ClientSession", isbn: str) -> str:
+async def get_cover_image_by_isbn(session: aiohttp.ClientSession, isbn: str) -> str:
     """Returns the book cover for the given book using OpenLibrary API"""
     cover_id = await get_cover_id_by_isbn(session, isbn)
 
@@ -197,7 +198,7 @@ async def get_cover_image_by_isbn(session: "aiohttp.ClientSession", isbn: str) -
     return cover_image_url
 
 
-async def get_cover_id_by_isbn(session: "aiohttp.ClientSession", isbn: str) -> int:
+async def get_cover_id_by_isbn(session: aiohttp.ClientSession, isbn: str) -> int:
     """Gets the book cover ID from OpenLibrary API"""
     isbn_api_url = f"https://openlibrary.org/isbn/{isbn}.json"
 
