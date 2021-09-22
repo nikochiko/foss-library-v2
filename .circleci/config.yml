@@ -6,6 +6,7 @@ jobs:
         environment:
           TEST_ENV: "CIRCLECI"
           DATABASE_URL: postgresql://root@localhost/circle_test
+          CODECOV_TOKEN: $CODECOV_TOKEN
       - image: circleci/postgres:9.6-alpine-ram
     steps:
       - checkout
@@ -24,7 +25,11 @@ jobs:
           name: Running tests
           command: |
             . venv/bin/activate
-            python3 -m pytest
+            pytest --cov=./
+      - run:
+          name: Upload coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: test-reports/
           destination: foss-library-v2
