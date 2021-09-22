@@ -1,7 +1,46 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="container my-2">
-  <h1 class="text-secondary mb-2 fs-2">Members</h1>
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-stretch">
+    <h1 class="text-secondary mb-4 fs-2">Members <i class="fas fa-angle-right fa-xs"></i> List</h1>
+    <a class="text-reset text-decoration-none" href="{{ url_for('members.create') }}">
+      <i class="fas fa-user-plus fa-2x"></i>
+    </a>
+  </div>
+
+  <div class="container mx-auto">
+
+    {% for member in pagination.items %}
+    <div class="row p-2 border border-light rounded my-2 text-secondary">
+
+      <div class="col-2">
+        <a class="text-reset text-decoration-none" href="{{ url_for('members.show', id=member.id) }}">
+          <img class="img-thumbnail mx-auto d-block rounded-circle" width="80" src="{{ member.gravatar_url }}" />
+        </a>
+      </div>
+
+      <div class="col-2 d-flex align-items-center fw-bold">
+        <a class="text-reset text-decoration-none" href="{{ url_for('members.show', id=member.id) }}">
+          {{ member.first_name }} {{ member.last_name }}
+        </a>
+      </div>
+
+      <div class="col-2 d-flex align-items-center">
+        <a class="text-reset" href="mailto:{{ member.email }}">
+          {{ member.email }}
+        </a>
+      </div>
+
+      <div class="col-2 d-flex align-items-center">
+        <span class="fw-bold">Paid dues: &nbsp;</span>
+        Rs. {{ member.dues_paid }}
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
 </div>
 {% endblock %}

@@ -37,10 +37,33 @@
 
     {% include 'navbar.html' %}
 
-    <div class="container border border-primary" style="background-color: #FBFEF9;">
-      {% block content %}
-      {% endblock %}
-    </div>
+    <main role="main">
+
+      <div class="container border border-primary" style="background-color: #FBFEF9;">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="row">
+          <div class="col-md-12">
+            {% for category, message in messages %}
+            <div class="mt-2 alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <!-- end .alert -->
+            {% endfor %}
+          </div>
+          <!-- end col-md -->
+        </div>
+        <!-- end row -->
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+      </div>
+
+    </main>
 
     {% block js %}{% endblock %}
 

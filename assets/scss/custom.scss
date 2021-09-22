@@ -8,3 +8,7 @@ $font-family-base: "Radley";
 $text-muted: $secondary-light;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
+
+.star-checked {
+  color: $orange-400;
+}

@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="container my-2">
-  <h1 class="text-secondary mb-2 fs-2">Books</h1>
+<div class="container my-4">
+  <h1 class="text-secondary mb-4 fs-2">Books <i class="fa fa-angle-right fa-xs"></i> List</h1>
 
   <div class="container">
 
@@ -43,6 +43,32 @@
         <div class="row">
           <span class="text-muted">
             <b>Published on: </b>{{ book.publication_date.strftime('%d %B, %Y') }}
+          </span>
+        </div>
+
+        <div class="row">
+          <span class="text-muted">
+            <b>Average rating: </b>
+            {% if book.ratings_count > 0 %}
+
+              {% for i in range(1, 6) %}
+
+              {% if book.average_rating > i %}
+              <i class="fas fa-star fa-xs star-checked"></i>
+              {% else %}
+              <i class="fas fa-star fa-xs"></i>
+              {% endif %}
+
+              {% endfor %}
+
+              {{ book.average_rating }}
+
+            {% else %}
+
+              No ratings yet
+
+            {% endif %}
+
           </span>
         </div>
 

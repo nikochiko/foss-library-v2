@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template
+from flask import Blueprint, current_app, flash, render_template
 from sqlalchemy.exc import IntegrityError
 
 from fosslib.utils import Pagination, flash_form_errors, get_gravatar_image_url
@@ -19,6 +19,13 @@ def list():
     return render_template(template_path, pagination=pagination)
 
 
+@blueprint.route("/show/", methods=("GET",))
+def show():
+    template_path = "members/show.html"
+
+    return render_template("layout.html")
+
+
 @blueprint.route("/create/", methods=("GET", "POST"))
 def create():
     template_path = "members/create.html"
@@ -30,16 +37,21 @@ def create():
 
         member.gravatar_url = get_gravatar_image_url(member.email)
 
-        # may be room for improvement here. return
-        # a friendlier error than one thrown by DB
+        # some room for improvemen with error handling here
         try:
             member.save()
+            flash("Member added!", "success")
         except IntegrityError as e:
-            flash(e, "danger")
-            return render_template(template_path)
+            current_app.logger.info(f"IntegrityError: {e}")
+            flash(
+                "There was some error while trying to add the "
+                "new member. Maybe the email is already in use?",
+                "danger"
+            )
+            return render_template(template_path, form=form)
 
     flash_form_errors(form)
-    return render_template(template_path)
+    return render_template(template_path, form=form)
 
 
 def get_member_query_from_request_args():
