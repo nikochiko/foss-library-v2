@@ -1,4 +1,7 @@
 version: 2
+orbs:
+  codecov: codecov/codecov@3.0.0
+
 jobs:
   build:
     docker:
@@ -25,7 +28,7 @@ jobs:
           name: Running tests
           command: |
             . venv/bin/activate
-            pytest --cov=./
+            pytest --cov=./ --cov-report=xml
       - run:
           name: Upload coverage
           command: |
